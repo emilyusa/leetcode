@@ -1,0 +1,124 @@
+https://leetcode.com/problems/convert-binary-search-tree-to-sorted-doubly-linked-list/
+/*
+// Definition for a Node.
+class Node {
+public:
+    int val;
+    Node* left;
+    Node* right;
+
+    Node() {}
+
+    Node(int _val) {
+        val = _val;
+        left = NULL;
+        right = NULL;
+    }
+
+    Node(int _val, Node* _left, Node* _right) {
+        val = _val;
+        left = _left;
+        right = _right;
+    }
+};
+*/
+
+class Solution {
+public:
+    Node* treeToDoublyList(Node* root) {
+        if(!root) return NULL;
+        Node* pre = NULL, *head = NULL;
+        dfs(root, pre, head);
+        pre->right = head;
+        head->left = pre;
+        return head;
+    }
+    
+    void dfs(Node* node, Node* &pre, Node* &head) {
+        if(!node) return;
+        if(!head && !node->left) {
+            head = node;
+            pre = node;
+        }
+        Node* left = node->left;
+        Node* right = node->right;
+        if(left) dfs(left, pre, head);  // left node
+        pre->right = node;              // current node
+        node->left = pre;
+        pre = node;                    
+        if(right) dfs(right, pre, head);// right node
+    }
+};
+
+https://leetcode.com/problems/number-of-islands/submissions/
+class Solution {
+public:
+    int numIslands(vector<vector<char>>& grid) {
+        int m = grid.size(), n = grid[0].size(), res = 0;
+        for(int i = 0; i < m; i++) 
+            for(int j = 0; j < n; j++) {
+                if(grid[i][j] == '1') {
+                    dfs(grid, i, j);
+                    res++;
+                }
+            }
+        return res;
+    }
+    
+    void dfs(vector<vector<char>>& grid, int i, int j) {
+        int m = grid.size(), n = grid[0].size();
+        vector<vector<int>> dirs{{0,1}, {0,-1}, {1,0}, {-1,0}};
+        grid[i][j] = '0';
+        for(auto dir: dirs) {
+            int x = i + dir[0], y = j + dir[1];
+            if(x >=0 && x < m && y >= 0 && y < n && grid[x][y] == '1') {
+                dfs(grid, x, y);
+            }
+        }
+    }
+};
+
+https://leetcode.com/problems/alien-dictionary/submissions/
+class Solution {
+public:
+    string alienOrder(vector<string>& words) {
+        set<pair<char, char>> orders;
+        unordered_set<char> chars;
+        vector<int> in(256);
+        for (const auto w : words) chars.insert(w.begin(), w.end());
+        for (int i = 0; i < words.size() - 1; ++i) {
+            int mi = min(words[i].size(), words[i + 1].size()), j = 0;
+            for (; j < mi; ++j) {
+                // wrt wrf => t > f
+                if (words[i][j] != words[i + 1][j]) {
+                    orders.insert({words[i][j], words[i + 1][j]});
+                    break;
+                }
+            }
+            // wrt wrtt
+            if (j == mi && words[i].size() > words[i + 1].size()) return "";
+        }
+        queue<char> q;
+        string res;
+        for (const auto &o : orders) ++in[o.second];
+        for (const auto c : chars) {
+            if (in[c] == 0) {
+                q.push(c);
+                res += c;
+            }
+        }
+        while (!q.empty()) {
+            char t = q.front(); q.pop();
+            for (const auto &o : orders) {
+                if (o.first == t) {
+                    --in[o.second];
+                    if (in[o.second] == 0) {
+                        q.push(o.second);
+                        res += o.second;
+                    }
+                }
+            }
+        }
+        return res.size() == chars.size() ? res : "";
+    }
+};
