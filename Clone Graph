@@ -1,0 +1,71 @@
+https://leetcode.com/problems/clone-graph/
+/*
+// Definition for a Node.
+class Node {
+public:
+    int val;
+    vector<Node*> neighbors;
+    Node() {
+        val = 0;
+        neighbors = vector<Node*>();
+    }
+    Node(int _val) {
+        val = _val;
+        neighbors = vector<Node*>();
+    }
+    Node(int _val, vector<Node*> _neighbors) {
+        val = _val;
+        neighbors = _neighbors;
+    }
+};
+*/
+
+class Solution {
+public:
+    Node* cloneGraph(Node* node) {
+        if(!node) return NULL;
+        unordered_map<Node*, Node*> m;
+        Node* clone = new Node(node->val);
+        m[node] = clone;
+        queue<Node*> q;
+        q.push(node);
+        
+        while(!q.empty()) {
+            auto t=q.front(); q.pop();
+            for(auto nei : t->neighbors) {
+                if(!m.count(nei)) {
+                    Node *n = new Node(nei->val);
+                    m[nei] = n;
+                    q.push(nei);
+                }
+                m[t]->neighbors.push_back(m[nei]);
+            }
+        }
+        return clone;
+    }
+};
+
+https://leetcode.com/problems/sequence-reconstruction/
+class Solution {
+public:
+    bool sequenceReconstruction(vector<int>& org, vector<vector<int>>& seqs) {
+        unordered_map<int, int> m, pre;
+        for (int i = 0; i < org.size(); ++i) m[org[i]] = i;
+        for (auto& seq : seqs) {
+            for (int i = 0; i < seq.size(); ++i) {
+                if (!m.count(seq[i])) return false;
+                if (i > 0 && m[seq[i - 1]] >= m[seq[i]]) return false;
+                if (!pre.count(seq[i])) {
+                    pre[seq[i]] = (i > 0) ? m[seq[i - 1]] : -1;
+                } else {
+                    pre[seq[i]] = max(pre[seq[i]], (i > 0) ? m[seq[i - 1]] : -1);
+                }
+            }
+        }
+        for (int i = 0; i < org.size(); ++i) {
+            if (pre[org[i]] != i - 1) return false;
+        }
+        return true;
+    }
+};
+
