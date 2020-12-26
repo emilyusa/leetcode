@@ -1,0 +1,73 @@
+https://leetcode.com/problems/word-ladder/
+class Solution {
+public:
+    int ladderLength(string beginWord, string endWord, vector<string>& wordList) {
+        unordered_set<string> dict(wordList.begin(), wordList.end());
+        if(!dict.count(endWord)) return 0;
+        queue<string> q;
+        unordered_map<string, int> m;
+        m[beginWord] = 1;
+        q.push(beginWord);
+        
+        while(!q.empty()) {
+            auto word = q.front(); q.pop();
+            for(int i = 0; i < word.size(); i++) {
+                string nword = word;
+                for(int j = 0; j < 26; j++) {
+                    nword[i] = 'a' + j;
+                    if(dict.count(nword) && nword == endWord) return m[word] + 1;
+                    if(dict.count(nword) && !m.count(nword)) {
+                        m[nword] = m[word] + 1;
+                        q.push(nword);
+                    }
+                }
+            }
+        }
+        return 0;
+    }
+};
+
+https://leetcode.com/problems/serialize-and-deserialize-binary-tree/submissions/
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Codec {
+public:
+
+    // Encodes a tree to a single string.
+    string serialize(TreeNode* root) {
+        ostringstream out;
+        serialize(root, out);
+        return out.str();
+    }
+
+    // Decodes your encoded data to tree.
+    TreeNode* deserialize(string data) {
+        istringstream in(data);
+        return deserialize(in);
+    }
+private:
+    void serialize(TreeNode* root, ostringstream &out) {
+        if(!root) out<<"# ";
+        else {
+            out<<root->val<<" ";
+            serialize(root->left, out);
+            serialize(root->right, out);
+        }
+    }
+    TreeNode* deserialize(istringstream& in) {
+        string word;
+        in >> word;
+        if(word == "#") return nullptr;
+        TreeNode *root = new TreeNode(stoi(word));
+        root->left = deserialize(in);
+        root->right = deserialize(in);
+        return root;
+    }
+};
