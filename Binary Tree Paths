@@ -1,0 +1,59 @@
+https://leetcode.com/problems/binary-tree-paths/
+class Solution {
+public:
+    vector<string> binaryTreePaths(TreeNode* root) {
+        if (!root) return {};
+        vector<string> res;
+        string out;
+        helper(root, out, res);
+        return res;
+    }
+    void helper(TreeNode* root, string out, vector<string>& res) {
+        out += to_string(root->val);
+        if (!root->left && !root->right) {
+            res.push_back(out);
+        } else {
+            if (root->left) helper(root->left, out + "->", res);
+            if (root->right) helper(root->right, out + "->", res);
+        }
+    }
+};
+
+https://leetcode.com/problems/flatten-binary-tree-to-linked-list
+class Solution {
+public:
+    void flatten(TreeNode* root) {
+        if (!root) return;
+        stack<TreeNode*> st;
+        st.push(root);
+        
+        while(!st.empty()) {
+            TreeNode *t = st.top(); st.pop();
+            if (t->left) {
+                TreeNode *node = t->left;
+                while (node->right) {
+                    node = node->right;
+                }
+                node->right = t->right;
+                t->right = t->left;
+                t->left = NULL;
+            }
+            if (t->right) st.push(t->right);
+        }
+    }
+};
+
+https://leetcode.com/problems/balanced-binary-tree
+class Solution {
+public:
+    bool isBalanced(TreeNode* root) {
+        if(!root) return true;
+        if (abs(getDepth(root->left) - getDepth(root->right)) > 1) return false;
+        return isBalanced(root->left) && isBalanced(root->right);
+    }
+    
+    int getDepth(TreeNode* root) {
+        if (!root) return 0;
+        return max(getDepth(root->left), getDepth(root->right)) + 1;
+    }
+};
