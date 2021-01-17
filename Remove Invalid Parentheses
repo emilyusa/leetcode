@@ -1,0 +1,113 @@
+https://leetcode.com/problems/remove-invalid-parentheses/submissions/
+class Solution {
+public:
+    vector<string> removeInvalidParentheses(string s) {
+        if (isValid(s)) return {s};
+        unordered_set<string> visit;
+        vector<string> res;
+        queue<string> q;
+        q.push(s);
+        visit.insert(s);
+        bool found = false;
+        while (!q.empty()) {
+            int len = q.size();
+            for (int i = 0; i < len; i++) {
+                string str = q.front(); q.pop();
+                for (int j = 0; j < str.size(); j++) {
+                    string newStr = str.substr(0, j) + str.substr(j+1);
+                    if (!visit.count(newStr) && isValid(newStr)) {
+                        res.push_back(newStr);
+                        visit.insert(newStr);
+                        found = true;
+                    } else if (!visit.count(newStr)) {
+                        visit.insert(newStr);
+                        q.push(newStr);
+                    }
+                }
+            }
+            if (found) return res;
+        }
+        return {""};
+    }
+private:
+    bool isValid(string& s) {
+        if (s.size() == 0) return true;
+        int cnt = 0;
+        for (int i = 0; i < s.size(); i++) {
+            if (s[i] == '(')
+                cnt++;
+            else if (s[i] ==')')
+                cnt--;
+            if (cnt < 0) return false;
+        }
+        return cnt == 0;
+    }
+};
+
+https://leetcode.com/problems/n-queens/submissions/
+class Solution {
+public:
+    vector<vector<string>> solveNQueens(int n) {
+        vector<vector<string>> res;
+        vector<int> pos(n, -1);
+        helper(pos, 0, res);
+        return res;
+    }
+    void helper(vector<int>& pos, int row, vector<vector<string>>& res) {
+        int n = pos.size();
+        if (row == n) {
+            vector<string> out(n, string(n, '.'));
+            for (int i = 0; i < n; i++) {
+                out[i][pos[i]] = 'Q';
+            }
+            res.push_back(out);
+        } else {
+            for (int col = 0; col < n; col ++) {
+                if (isValid(pos, row, col)) {
+                    pos[row] = col;
+                    helper(pos, row + 1, res);
+                    pos[row] = -1;
+                }
+            }
+        }
+    }
+private:
+    bool isValid(vector<int>& pos, int row, int col) {
+        for (int i = 0; i < row; i++) {
+            if (col == pos[i] || abs(row - i) == abs(col - pos[i])) return false;
+        }
+        return true;
+    }
+};
+
+https://leetcode.com/problems/n-queens-ii/
+class Solution {
+public:
+    int totalNQueens(int n) {
+        int res = 0;
+        vector<int> pos(n, -1);
+        helper(pos, 0, res);
+        return res;
+    }
+    void helper(vector<int>& pos, int row, int& res) {
+        int n = pos.size();
+        if (row == n) {
+            res++;
+            return;
+        }
+        for (int col = 0; col < n; col++) {
+            if (isValid(pos, row, col)) {
+                pos[row] = col;
+                helper(pos, row + 1, res);
+                pos[row] = -1;
+            }
+        }
+    }
+private:
+    bool isValid(vector<int>& pos, int row, int col) {
+        for (int i = 0; i < row; i++) {
+            if (col == pos[i] || abs(row - i) == abs(col - pos[i])) return false;
+        }
+        return true;
+    }
+};
