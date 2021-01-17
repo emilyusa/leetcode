@@ -1,0 +1,76 @@
+https://www.lintcode.com/problem/k-sum-ii/description
+class Solution {
+public:
+    /*
+     * @param A: an integer array
+     * @param k: a postive integer <= length(A)
+     * @param target: an integer
+     * @return: A list of lists of integer
+     */
+    vector<vector<int>> kSumII(vector<int> &A, int k, int target) {
+        // write your code here
+        vector<vector<int>> res;
+        vector<int> out;
+        helper(A, 0, k, target, out, res);
+        return res;
+    }
+    void helper(vector<int>& A, int idx, int k, int target, vector<int>& out, vector<vector<int>>& res) {
+        if (k < 0 || target < 0) return;
+        if (k == 0 && target == 0) {
+            res.push_back(out);
+            return;
+        }
+        for (int i = idx; i < A.size(); i++) {
+            out.push_back(A[i]);
+            helper(A, i + 1, k - 1, target - A[i], out, res);
+            out.pop_back();
+        }
+    }
+};
+
+https://leetcode.com/problems/wildcard-matching/submissions/
+class Solution {
+public:
+    bool isMatch(string s, string p) {
+        int m = s.size(), n = p.size();
+        vector<vector<bool>> dp(m + 1, vector<bool>(n + 1));
+        dp[0][0] = true;
+        for (int i = 1; i <= n; i++)
+            if (p[i - 1] == '*')
+                dp[0][i] = dp[0][i - 1];
+        
+        for (int i = 1; i <= m; i++) 
+            for(int j = 1; j <= n; j++) {
+                if (p[j - 1] == '*') 
+                    dp[i][j] = dp[i - 1][j] | dp[i][j - 1];
+                else 
+                    dp[i][j] = (s[i - 1] == p[j - 1] || p[j - 1] == '?') && dp[i - 1][j - 1];
+            }
+        return dp[m][n];
+    }
+};
+
+https://leetcode.com/problems/regular-expression-matching/
+class Solution {
+public:
+    bool isMatch(string s, string p) {
+        int n = s.size(), m = p.size();
+        vector<vector<bool>> dp(n + 1, vector<bool>(m + 1, false));
+        dp[n][m] = true;
+        for(int i = n; i >=0; --i) {
+            for(int j = m - 1; j >=0; --j) {
+                bool case1= j+1<=m && p[j+1]!='*' && i<n &&    // without *
+                            (s[i]==p[j] || p[j]=='.') &&
+                            dp[i+1][j+1];
+                bool case2= j+1<=m && p[j+1]=='*' && i<n &&    // a* -> ab when a match
+                            (s[i]==p[j] || p[j]=='.') &&
+                            dp[i+1][j];
+                bool case3= j+2<=m && p[j+1]=='*' &&           // a* -> empty when a not match
+                            dp[i][j+2];
+                
+                dp[i][j]=case1 ||case2 ||case3;
+            }
+        }
+        return dp[0][0];
+    }
+};
