@@ -1,0 +1,70 @@
+https://leetcode.com/problems/combinations/submissions/
+class Solution {
+public:
+    vector<vector<int>> combine(int n, int k) {
+        vector<int> out;
+        vector<vector<int>> res;
+        helper(n, k, 1, out, res);
+        return res;
+    }
+    void helper(int n, int k, int idx, vector<int>& out, vector<vector<int>>& res) {
+        if (out.size() == k) {
+            res.push_back(out);
+            return;
+        }
+        for (int i = idx; i <= n; i++) {
+            out.push_back(i);
+            helper(n, k, i+1, out, res);
+            out.pop_back();
+        }
+        
+    }
+};
+
+https://leetcode.com/problems/combination-sum/submissions/
+class Solution {
+public:
+    vector<vector<int>> combinationSum(vector<int>& candidates, int target) {
+        vector<vector<int>> res;
+        vector<int> out;
+        helper(candidates, target, 0, out, res);
+        return res;
+    }
+    void helper(vector<int>& candidates, int target, int idx, vector<int>& out, vector<vector<int>>& res) {
+        if (target < 0) return;
+        if (target == 0) {
+            res.push_back(out);
+            return;
+        }
+        for (int i = idx; i < candidates.size(); i++) {
+            out.push_back(candidates[i]);
+            helper(candidates, target - candidates[i], i, out, res);
+            out.pop_back();
+        }
+    }
+};
+
+https://leetcode.com/problems/combination-sum-ii/submissions/
+class Solution {
+public:
+    vector<vector<int>> combinationSum2(vector<int>& candidates, int target) {
+        vector<vector<int>> res;
+        vector<int> out;
+        sort(candidates.begin(), candidates.end());
+        helper(candidates, target, 0, out, res);
+        return res;
+    }
+    void helper(vector<int>& candidates, int target, int idx, vector<int>& out, vector<vector<int>>& res) {
+        if (target < 0) return;
+        if (target == 0) {
+            res.push_back(out);
+            return;
+        }
+        for (int i = idx; i <candidates.size(); i++) {
+            if (i > idx && candidates[i] == candidates[i-1]) continue;
+            out.push_back(candidates[i]);
+            helper(candidates, target - candidates[i], i+1, out, res);
+            out.pop_back();
+        }
+    }
+};
