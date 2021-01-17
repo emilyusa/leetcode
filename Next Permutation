@@ -1,0 +1,65 @@
+https://leetcode.com/problems/next-permutation/
+class Solution {
+public:
+    void nextPermutation(vector<int>& nums) {
+        if(nums.size()==1) return;
+        int n=nums.size();
+        int i=n-2;
+        for(;i>=0;i--)
+        {
+            if(nums[i]<nums[i+1]) break;  //找峰值左肩
+        }
+        if(i<0) 
+        {
+            reverse(nums.begin(), nums.end());  //原数组是递减数组
+            return;
+        }
+        int idx=i, cur=n-1;
+        while(cur>idx)                   //在右边从队尾开始找比左肩大的值做swap
+        {
+            if(nums[cur]>nums[idx])
+            {
+                swap(nums[idx], nums[cur]);
+                break;
+            }
+            cur--;
+        }
+        reverse(nums.begin()+idx+1,nums.end()); //reverse左肩值右边的部分数组
+    }
+};
+
+https://www.lintcode.com/problem/next-permutation-ii/description
+class Solution {
+public:
+    /**
+     * @param nums: An array of integers
+     * @return: nothing
+     */
+    void nextPermutation(vector<int> &nums) {
+        // write your code here
+        if(nums.size()==1) return;
+        int n=nums.size();
+        int i=n-2;
+        for(;i>=0;i--)
+        {
+            if(nums[i]<nums[i+1]) break;  //找峰值左肩
+        }
+        if(i<0) 
+        {
+            reverse(nums.begin(), nums.end());  //原数组是递减数组
+            return;
+        }
+        int idx=i, cur=n-1;
+        while(cur>idx)                   //在右边从队尾开始找比左肩大的值做swap
+        {
+            if(nums[cur]>nums[idx])
+            {
+                swap(nums[idx], nums[cur]);
+                break;
+            }
+            cur--;
+        }
+        reverse(nums.begin()+idx+1,nums.end()); //reverse左肩值右边的部分数组
+    }
+};
+
