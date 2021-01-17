@@ -1,0 +1,58 @@
+https://leetcode.com/problems/permutations/
+class Solution {
+public:
+    vector<vector<int>> permute(vector<int>& nums) {
+        int n = nums.size();
+        vector<vector<int>> res;
+        vector<int> out;
+        vector<bool> visit(n);
+        helper(nums, 0, out, res, visit);
+        return res;
+    }
+    void helper(vector<int>& nums, int idx, vector<int>& out, vector<vector<int>>& res, vector<bool>& visit) {
+        int n = nums.size();
+        if (idx == n) {
+            res.push_back(out);
+            return;
+        } 
+        for (int i = 0; i < n; i++) {
+            if (visit[i]) continue;
+            visit[i] = true;
+            out.push_back(nums[i]);
+            helper(nums, idx + 1, out, res, visit);
+            out.pop_back();
+            visit[i] = false;
+        }
+        
+    }
+};
+
+https://leetcode.com/problems/permutations-ii/
+class Solution {
+public:
+    vector<vector<int>> permuteUnique(vector<int>& nums) {
+        int n = nums.size();
+        vector<vector<int>> res;
+        vector<int> out;
+        vector<bool> visit(n);
+        sort(nums.begin(), nums.end());
+        helper(nums, 0, out, res, visit);
+        return res;
+    }
+    void helper(vector<int>& nums, int idx, vector<int>& out, vector<vector<int>>& res, vector<bool>& visit) {
+        int n = nums.size();
+        if (idx == n) {
+            res.push_back(out);
+            return;
+        }
+        for (int i = 0; i < n; i++) {
+            if (visit[i]) continue;
+            if (i > 0 && nums[i] == nums[i - 1] && !visit[i-1]) continue;
+            visit[i] = true;
+            out.push_back(nums[i]);
+            helper(nums, idx + 1, out, res, visit);
+            out.pop_back();
+            visit[i] = false;
+        }
+    }
+};
