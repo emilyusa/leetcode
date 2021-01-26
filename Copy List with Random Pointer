@@ -1,0 +1,104 @@
+https://leetcode.com/problems/copy-list-with-random-pointer/
+/*
+// Definition for a Node.
+class Node {
+public:
+    int val;
+    Node* next;
+    Node* random;
+    
+    Node(int _val) {
+        val = _val;
+        next = NULL;
+        random = NULL;
+    }
+};
+*/
+
+class Solution {
+public:
+    Node* copyRandomList(Node* head) {
+        if (!head) return NULL;
+        Node *cur = head;
+        while (cur) {
+            Node* node = new Node(cur->val);
+            node->next = cur->next;
+            cur->next = node;
+            cur = node->next;
+        }
+        cur = head;
+        while (cur) {
+            if (cur->random)
+                cur->next->random = cur->random->next;
+            cur = cur->next->next;
+        }
+        Node * pre = head->next;
+        cur = head;
+        while(cur) {
+            Node* t = cur->next;
+            cur->next = t->next;
+            if (t->next)
+                t->next = t->next->next;
+            cur = cur->next;
+        }
+        return pre;
+    }
+};
+
+
+https://leetcode.com/problems/group-anagrams/
+class Solution {
+public:
+    vector<vector<string>> groupAnagrams(vector<string>& strs) {
+        int n = strs.size();
+        unordered_map<string, vector<string>> m;
+        for (auto str : strs) {
+            string word = str;
+            sort(word.begin(), word.end());
+            m[word].push_back(str);
+        }
+        vector<vector<string>> res;
+        for (auto mm : m) {
+            res.push_back(mm.second);
+        }
+        return res;
+    }
+};
+
+https://leetcode.com/problems/longest-consecutive-sequence/submissions/
+class Solution {
+public:
+    int longestConsecutive(vector<int>& nums) {
+        int res = 0;
+        unordered_set<int> st(nums.begin(), nums.end());
+        for (auto num : nums) {
+            if (!st.count(num - 1)) {
+                int end = num;
+                while (st.count(end))
+                    end++;
+                res = max(res, end - num);
+            }
+        }
+        return res;
+    }
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
