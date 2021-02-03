@@ -1,0 +1,90 @@
+https://leetcode.com/problems/find-median-from-data-stream/
+class MedianFinder {
+public:
+    /** initialize your data structure here. */
+    MedianFinder() {
+        
+    }
+    
+    void addNum(int num) {
+        small.push(num);
+        large.push(small.top());
+        small.pop();
+        if (small.size() < large.size()) {
+            small.push(large.top());
+            large.pop();
+        }
+            
+    }
+    
+    double findMedian() {
+        //cout<<small.size()<<" "<<large.top()<<endl;
+        if (small.size() > large.size()) return small.top();
+        return (double)(small.top() + large.top()) /2.0;
+    }
+private:
+    priority_queue<int> small;
+    priority_queue<int, vector<int>, greater<int>> large;
+};
+
+https://leetcode.com/problems/high-five/
+class Solution {
+public:
+    vector<vector<int>> highFive(vector<vector<int>>& items) {
+        map<int, priority_queue<int, vector<int>, greater<int>>> m;
+        for (auto item : items) {
+            m[item[0]].push(item[1]);
+            if (m[item[0]].size()>5) {
+                m[item[0]].pop();
+            }
+        }
+        vector<vector<int>> res;
+        for (auto mm : m) {
+            auto q = mm.second;
+            int sum = 0;
+            while(!q.empty()) {
+                sum += q.top();
+                q.pop();
+            }
+            res.push_back({mm.first, sum/5});
+        }
+        return res;
+    }
+};
+
+https://www.lintcode.com/problem/merge-k-sorted-arrays/my-submissions
+struct Node {
+        int row, col, val;
+        Node (int _row, int _col, int _val): row(_row), col(_col), val(_val){}
+        bool operator < (const Node &obj) const {
+            return val > obj.val;
+        }
+    };
+    
+class Solution {
+public:
+    /**
+     * @param arrays: k sorted integer arrays
+     * @return: a sorted array
+     */
+    vector<int> mergekSortedArrays(vector<vector<int>> &arrays) {
+        // write your code here
+        
+        int n = arrays.size();
+        priority_queue<Node> q;
+        for (int i = 0; i < n; i++) {
+            if (arrays[i].size())
+                q.push(Node(i, 0, arrays[i][0]));
+        }
+        vector<int> res;
+        while (!q.empty()) {
+            auto t = q.top();
+            q.pop();
+            res.push_back(t.val);
+            if (t.col + 1 < arrays[t.row].size()) {
+                q.push(Node(t.row, t.col + 1, arrays[t.row][t.col + 1]));
+            }
+        }
+        return res;
+    }
+};
