@@ -1,0 +1,79 @@
+https://leetcode.com/problems/ugly-number-ii/
+class Solution {
+public:
+    int nthUglyNumber(int n) {
+        if (n <= 0) return false;
+        if (n == 1) return true;
+        int t2 = 0, t3 = 0, t5 = 0;
+        vector<int> k(n);
+        k[0] = 1;
+        for (int i = 1; i < n; i++) {
+            k[i] = min(k[t2]*2, min(k[t3]*3, k[t5]*5));
+            if (k[i] == k[t2]*2) t2++;
+            if (k[i] == k[t3]*3) t3++;
+            if (k[i] == k[t5]*5) t5++;
+        }
+        return k[n-1];
+    }
+};
+
+https://leetcode.com/problems/lru-cache/submissions/
+class LRUCache {
+public:
+    LRUCache(int capacity) {
+        cap= capacity;
+    }
+    
+    int get(int key) {
+        if (!m.count(key)) return -1;
+        int res = (*m[key]).second;
+        l.splice(l.begin(), l, m[key]);
+        return res;
+    }
+    
+    void put(int key, int value) {
+        if(m.count(key)) {
+            auto it = m[key];
+            l.erase(it);
+            m.erase(key);
+        }
+        l.push_front({key, value});
+        m[key] = l.begin();
+        if(l.size() > cap) {
+            auto target = l.back();
+            m.erase(target.first);
+            l.pop_back();
+        }
+    }
+private:
+    int cap;
+    list<pair<int,int>> l;
+    unordered_map<int, list<pair<int,int>>::iterator> m;
+        
+};
+
+https://leetcode.com/problems/intersection-of-two-arrays/
+class Solution {
+public:
+    vector<int> intersection(vector<int>& nums1, vector<int>& nums2) {
+        sort(nums1.begin(), nums1.end());
+        sort(nums2.begin(), nums2.end());
+        
+        vector<int> res;
+        int i = 0, j = 0, n1 = nums1.size(), n2 = nums2.size();
+        while(i < n1 && j < n2) {
+            if (nums1[i] < nums2[j])
+                i++;
+            else if (nums1[i] > nums2[j])
+                j++;
+            else {
+                if (res.empty() || res.back()!=nums1[i])
+                    res.push_back(nums1[i]);
+                i++;
+                j++;
+            }
+                
+        }
+        return res;
+    }
+};
